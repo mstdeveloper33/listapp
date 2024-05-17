@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -155,11 +156,13 @@ class _GirisFormuState extends State<GirisFormu> {
           (route) => false);
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
-      if (e.code == 'user-not-found') {
-        Fluttertoast.showToast(msg: 'Kullanıcı bulunamadı.');
-      } else if (e.code == 'wrong-password') {
-        Fluttertoast.showToast(msg: 'Yanlış parola.');
-      }
+      AwesomeDialog(
+        autoHide: Duration(seconds: 1),
+        desc: "Email veya Şifre Hatalı",
+        context: context,
+      ).show();
+      emailcontrol.clear();
+      parolacontrol.clear();
     } catch (e) {
       print(e);
     }

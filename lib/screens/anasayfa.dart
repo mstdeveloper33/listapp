@@ -15,7 +15,6 @@ class AnaSayfa extends StatefulWidget {
 }
 
 class _AnaSayfaState extends State<AnaSayfa> {
-  bool tamamlandi = false;
   String? mevcutkullaniciUidTutucu;
   @override
   void initState() {
@@ -88,8 +87,6 @@ class _AnaSayfaState extends State<AnaSayfa> {
                           "Son Tarih : ${alinanVeri[index]["sonTarih"]} ",
                           style: TextStyle(
                               fontSize: 13, fontWeight: FontWeight.bold)),
-                              
-
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -97,7 +94,9 @@ class _AnaSayfaState extends State<AnaSayfa> {
                             onPressed: () {
                               String documentId = alinanVeri[index].id;
                               _showEditDialog(
-                                  documentId, alinanVeri[index]["ad"]);
+                                  documentId,
+                                  alinanVeri[index]["ad"],
+                                  alinanVeri[index]["sonTarih"]);
                               // Düzenleme işlemi için kod buraya eklenecek
                             },
                             icon: Icon(Icons.edit),
@@ -190,18 +189,32 @@ class _AnaSayfaState extends State<AnaSayfa> {
     }
   }
 
-  void _showEditDialog(String documentId, String currentTaskName) {
+  void _showEditDialog(
+      String documentId, String currentTaskName, String datetasktime) {
     TextEditingController taskNameController =
         TextEditingController(text: currentTaskName);
+    TextEditingController tarihkontrol =
+        TextEditingController(text: datetasktime);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Görevi Düzenle"),
-          content: TextField(
-            controller: taskNameController,
-            decoration: InputDecoration(hintText: "Yeni Görev Adı"),
+          content: Column(
+            children: [
+              TextField(
+                controller: taskNameController,
+                decoration: InputDecoration(hintText: "Yeni Görev"),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              TextField(
+                controller: tarihkontrol,
+                decoration: InputDecoration(hintText: "Yeni Tarih"),
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -213,12 +226,14 @@ class _AnaSayfaState extends State<AnaSayfa> {
             TextButton(
               onPressed: () {
                 String newTaskName = taskNameController.text.trim();
-                if (newTaskName.isNotEmpty) {
-                  _editTask(documentId,
-                      newTaskName); // Düzenleme işlemini gerçekleştirme
+                String newdate = tarihkontrol.text.trim();
+                if (newTaskName.isNotEmpty || newdate.isNotEmpty) {
+                  _editTask(documentId, newTaskName,
+                      newdate); // Düzenleme işlemini gerçekleştirme
                   Navigator.pop(context); // Onay butonu
                 } else {
-                  Fluttertoast.showToast(msg: "Lütfen yeni görev adını girin.");
+                  Fluttertoast.showToast(
+                      msg: "Lütfen yeni görev adını ve/ya tarih girin.");
                 }
               },
               child: Text("Kaydet"),
@@ -229,14 +244,14 @@ class _AnaSayfaState extends State<AnaSayfa> {
     );
   }
 
-  void _editTask(String documentId, String newTaskName) async {
+  void _editTask(String documentId, String newTaskName, String newdate) async {
     try {
       await FirebaseFirestore.instance
           .collection("Gorevler")
           .doc(mevcutkullaniciUidTutucu)
           .collection("Gorevlerim")
           .doc(documentId)
-          .update({"ad": newTaskName});
+          .update({"ad": newTaskName, "sonTarih": newdate}); // dikkat
       Fluttertoast.showToast(msg: "Görev Başarıyla Güncellendi.");
     } catch (e) {
       print("Güncelleme işlemi başarısız: $e");

@@ -37,7 +37,7 @@ class _GorevEkleState extends State<GorevEkle> {
               },
               controller: adAlici,
               decoration: InputDecoration(
-                  labelText: "Görev Adi : ", border: OutlineInputBorder()),
+                  labelText: "Görev : ", border: OutlineInputBorder()),
             ),
           ),
           Padding(
@@ -91,9 +91,11 @@ class _GorevEkleState extends State<GorevEkle> {
       "ad": adAlici.text,
       "sonTarih": tarihAlici.text,
       "zaman": zamanTutucu.toString(),
-      "tamamlandi": false,
+   
       "tamZaman": zamanTutucu
     });
     Fluttertoast.showToast(msg: "Görev Başarıyla Eklendi.");
+    adAlici.clear();
+    tarihAlici.clear();
   }
 }
