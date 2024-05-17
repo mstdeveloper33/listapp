@@ -213,6 +213,21 @@ class _AnaSayfaState extends State<AnaSayfa> {
               TextField(
                 controller: tarihkontrol,
                 decoration: InputDecoration(hintText: "Yeni Tarih"),
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
+                  if (pickedDate != null) {
+                    String formattedDate =
+                        DateFormat('yyyy-MM-dd').format(pickedDate);
+                    setState(() {
+                      tarihkontrol.text = formattedDate;
+                    });
+                  }
+                },
               ),
             ],
           ),

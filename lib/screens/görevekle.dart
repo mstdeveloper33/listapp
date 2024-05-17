@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class GorevEkle extends StatefulWidget {
   const GorevEkle({super.key});
@@ -43,6 +44,21 @@ class _GorevEkleState extends State<GorevEkle> {
           Padding(
             padding: EdgeInsets.all(8),
             child: TextFormField(
+              onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
+                  if (pickedDate != null) {
+                    String formattedDate =
+                        DateFormat('yyyy-MM-dd').format(pickedDate);
+                    setState(() {
+                      tarihAlici.text = formattedDate;
+                    });
+                  }
+                },
               onChanged: (value) {
                 goreveklekontrol();
               },
